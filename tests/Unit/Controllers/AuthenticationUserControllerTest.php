@@ -35,8 +35,7 @@ class AuthenticationUserControllerTest extends TestCase
 
         parent::tearDown();
     }
-
-    public function test_successful_register_user()
+    public function test_register_user()
     {
         $requestData = [
             'name' => Str::random(4),

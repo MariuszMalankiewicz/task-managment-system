@@ -3,6 +3,8 @@
 namespace Tests\Unit\Repositories;
 
 use Tests\TestCase;
+use App\Models\User;
+use Illuminate\Support\Str;
 use App\Interfaces\UserRepositoryInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -19,19 +21,26 @@ class UserRepositoryTest extends TestCase
         $this->userRepository = $this->app->make(UserRepositoryInterface::class);
     }
 
+    public function test_instance_user_repository()
+    {
+        $this->assertInstanceOf(UserRepositoryInterface::class, $this->userRepository);
+    }
+
     public function test_create_user()
+
     {
         $user = [
-            'name' => 'test',
-            'email'=> 'test@test.com',
-            'password'=> 'password1234',
+            'name' => Str::random(4),
+            'email' => fake()->unique()->safeEmail(),
+            'password' => fake()->password(),
         ];
 
-        $this->userRepository->createUser($user);
+        $response = $this->userRepository->createUser($user);
 
-        $this->assertDatabaseHas('users', [
-            'name' => $user['name'],
-            'email' => $user['email']
-        ]);
+        $this->assertInstanceOf(User::class, $response);
+
+        $this->assertEquals($user['name'], $response->name);
+
+        $this->assertEquals($user['email'], $response->email);
     }
 }

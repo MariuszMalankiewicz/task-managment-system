@@ -5,6 +5,7 @@ namespace Tests\Unit\Services;
 use Mockery;
 use Tests\TestCase;
 use App\Models\User;
+use Illuminate\Support\Str;
 use App\Services\UserService;
 use App\Repositories\UserRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -22,14 +23,21 @@ class UserServiceTest extends TestCase
         parent::setUp();
 
         $this->userRepository = Mockery::mock(UserRepository::class);
+
         $this->userService = new UserService($this->userRepository);
     }
+
+    public function test_instance_user_service()
+    {
+        $this->assertInstanceOf(User::class, $this->userService);
+    }
+
     public function test_create_user()
     {
         $data = [
-            'name' => 'test',
-            'email' => 'test@test.com',
-            'password' => 'test1234',
+            'name' => Str::random(4),
+            'email' => fake()->unique()->safeEmail(),
+            'password' => fake()->password(),
         ];
 
         $this->userRepository
@@ -38,9 +46,12 @@ class UserServiceTest extends TestCase
             ->once()
             ->andReturn(new User($data));
 
-        $user = $this->userService->createUser($data);
+        $response = $this->userService->createUser($data);
 
-        $this->assertInstanceOf(User::class, $user);
-        $this->assertEquals('test', $user->name);
+        $this->assertInstanceOf(User::class, $response);
+
+        $this->assertEquals($data['name'], $response->name);
+
+        $this->assertEquals($data['email'], $response->email);
     }
 }

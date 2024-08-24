@@ -54,8 +54,11 @@ class AuthenticationUserRegisterRequestTest extends TestCase
         $validator = Validator::make($data, $rules);
 
         $this->assertFalse($validator->passes());
+        
         $this->assertArrayHasKey('name', $validator->errors()->toArray());
+
         $this->assertArrayHasKey('email', $validator->errors()->toArray());
+
         $this->assertArrayHasKey('password', $validator->errors()->toArray());
     }
 }

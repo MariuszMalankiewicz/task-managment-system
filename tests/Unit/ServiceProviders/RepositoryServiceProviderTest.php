@@ -8,12 +8,15 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RepositoryServiceProviderTest extends TestCase
 {
-    use RefreshDatabase;
+    protected $service;
+    public function setUp(): void
+    {
+        parent::setUp();
 
+        $this->service = $this->app->make(UserRepositoryInterface::class);   
+    }
     public function test_user_repository_bindings_are_registered()
     {
-        $service = $this->app->make(UserRepositoryInterface::class);
-
-        $this->assertInstanceOf(UserRepository::class, $service);
+        $this->assertInstanceOf(UserRepository::class, $this->service);
     }
 }
