@@ -15,5 +15,10 @@ class UserService
     public function findUserFromEmail(string $email): User|null
     {
         return $this->userRepository->findUserFromEmail($email);
-    }   
+    } 
+
+    public function findUserFromId(int $id): User|null
+    {
+        return $this->userRepository->findUserFromId($id);
+    }
 }

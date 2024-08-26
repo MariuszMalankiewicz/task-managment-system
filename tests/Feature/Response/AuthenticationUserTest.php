@@ -1,6 +1,7 @@
 <?php
 
 namespace Tests\Feature\Response;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -8,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class AuthenticationUserTest extends TestCase
 {
     use RefreshDatabase;
-    public function test_successful_register_user_and_check_returned_json_structure()
+    public function test_successful_register_user()
     {   
         $user = User::factory()->make()->makeVisible('password');
 
@@ -22,8 +23,7 @@ class AuthenticationUserTest extends TestCase
             ]);
     }
 
-    public function test_successful_login_user_and_check_returned_json_structure()
-
+    public function test_successful_login_user()
     {   
         User::factory()->create([
             'email' => 'test@test.com',
@@ -45,7 +45,7 @@ class AuthenticationUserTest extends TestCase
         ]);
     }
 
-    public function test_not_found_login_user_and_check_returned_json_structure()
+    public function test_not_found_user_cannot_login()
     {   
         $user = [
             'email' => 'test@test.com',
@@ -59,6 +59,33 @@ class AuthenticationUserTest extends TestCase
         $response->assertJsonStructure([
             'message', 
             'data',
+        ]);
+    }
+
+    public function test_successful_logout_user()
+    {   
+        $user = Sanctum::actingAs(User::factory()->create());
+
+        $response = $this->postJson(route('user.logout', $user->toArray()));
+
+        $response->assertOk();
+
+        $response->assertJsonStructure([
+            'message', 
+            'data',
+        ]);
+    }
+
+    public function test_unauthentication_user_cannot_logout()
+    {   
+        $user = User::factory()->create();
+
+        $response = $this->postJson(route('user.logout', $user->toArray()));
+
+        $response->assertUnauthorized();
+
+        $response->assertJsonStructure([
+            'message',
         ]);
     }
 }

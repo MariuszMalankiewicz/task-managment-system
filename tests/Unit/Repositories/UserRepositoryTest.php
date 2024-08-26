@@ -45,7 +45,7 @@ class UserRepositoryTest extends TestCase
 
     public function test_find_user_from_email_return_user()
     {
-        $user = User::factory()->create(['email' => 'test@test.com']);
+        User::factory()->create(['email' => 'test@test.com']);
 
         $email = 'test@test.com';
 
@@ -56,12 +56,35 @@ class UserRepositoryTest extends TestCase
 
     public function test_find_user_from_email_return_null()
     {
-        $user = User::factory()->create(['email' => 'test@test.com']);
+        User::factory()->create(['email' => 'test@test.com']);
 
         $email = 'otheremail@otheremail.com';
 
         $response = $this->userRepository->findUserFromEmail($email);
 
         $this->assertEquals(null, $response);
+    }
+
+    public function test_success_find_user_from_id()
+    {
+        User::factory()->create([
+            'id' => 1,
+            'name' => 'test',
+            'email' => 'test@test.com',
+        ]);
+
+        $data = [
+            'id' => 1,
+            'name' => 'test',
+            'email' => 'test@test.com',
+        ];
+
+        $response = $this->userRepository->findUserFromId($data['id']);
+
+        $this->assertEquals($data['id'], $response->id);
+
+        $this->assertEquals($data['name'], $response->name);
+
+        $this->assertEquals($data['email'], $response->email);
     }
 }

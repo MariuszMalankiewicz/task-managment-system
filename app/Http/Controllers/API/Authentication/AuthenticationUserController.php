@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\AuthenticationUserLoginRequest;
 use App\Http\Requests\AuthenticationUserRegisterRequest;
+use Illuminate\Support\Facades\Auth;
 
 class AuthenticationUserController extends Controller
 {
@@ -35,7 +36,7 @@ class AuthenticationUserController extends Controller
 
         if (!$user || !Hash::check($validateDataPassword, $user->password)) 
         {
-            return response()->json(['message' => 'email lub hasło jest nie poprawne', 'data' => $user], Response::HTTP_NOT_FOUND);
+            return response()->json(['message' => 'email lub hasło jest nie poprawne', 'data' => null], Response::HTTP_NOT_FOUND);
         }
 
         $data = [
@@ -44,5 +45,16 @@ class AuthenticationUserController extends Controller
         ];
 
         return response()->json(['message' => 'logowanie udane', 'data' => $data], Response::HTTP_OK);
+    }
+
+    public function logout()
+    {
+        $userId = Auth::check();
+
+        $user = $this->userService->findUserFromId($userId);
+
+        $user->tokens()->delete();
+
+        return response()->json(['message' => 'poprawne wylogowanie', 'data' => null], Response::HTTP_OK);
     }
 }
