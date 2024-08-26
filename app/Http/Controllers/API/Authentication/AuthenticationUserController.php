@@ -19,4 +19,11 @@ class AuthenticationUserController extends Controller
 
         return response()->json(['message' => 'użytkownik został dodany', 'data' => $user], Response::HTTP_CREATED);
     }
+
+    public function login()
+    {
+        $user = [];
+
+        return response()->json(['message' => 'zostałeś zalogowany poprawnie', 'data' => $user], Response::HTTP_OK);
+    }
 }
