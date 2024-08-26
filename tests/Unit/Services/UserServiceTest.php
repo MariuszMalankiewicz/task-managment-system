@@ -54,4 +54,36 @@ class UserServiceTest extends TestCase
 
         $this->assertEquals($data['email'], $response->email);
     }
+
+    public function test_find_user_from_email_retured_user()
+    {
+        $user = User::factory()->create(['email' => 'test@test.com']);
+
+        $email = 'test@test.com';
+
+        $this->userRepository
+            ->shouldReceive('findUserFromEmail')
+            ->with($email)
+            ->once()
+            ->andReturn(new User($user->toArray()));
+
+        $response = $this->userService->findUserFromEmail($email);
+
+        $this->assertEquals($email, $response->email);
+    }
+
+    public function test_find_user_from_email_retured_null()
+    {
+        $email = 'test@test.com';
+
+        $this->userRepository
+            ->shouldReceive('findUserFromEmail')
+            ->with($email)
+            ->once()
+            ->andReturn(new User());
+
+        $response = $this->userService->findUserFromEmail($email);
+
+        $this->assertEquals(null, $response->email);
+    }
 }

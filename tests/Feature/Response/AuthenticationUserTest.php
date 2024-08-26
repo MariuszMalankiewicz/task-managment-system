@@ -3,7 +3,6 @@
 namespace Tests\Feature\Response;
 use Tests\TestCase;
 use App\Models\User;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AuthenticationUserTest extends TestCase
@@ -24,11 +23,42 @@ class AuthenticationUserTest extends TestCase
     }
 
     public function test_successful_login_user_and_check_returned_json_structure()
-    {   
-        $user = Sanctum::actingAs(User::factory()->make()->makeVisible('password'));
 
-        $response = $this->postJson(route('user.login', $user->toArray()));
+    {   
+        User::factory()->create([
+            'email' => 'test@test.com',
+            'password' => 'password1234', 
+        ]);
+
+        $user = [
+            'email' => 'test@test.com',
+            'password' => 'password1234',
+        ];
+
+        $response = $this->postJson(route('user.login', $user));
 
         $response->assertOk();
+
+        $response->assertJsonStructure([
+            'message', 
+            'data' => array('access_token', 'token_type'),
+        ]);
+    }
+
+    public function test_not_found_login_user_and_check_returned_json_structure()
+    {   
+        $user = [
+            'email' => 'test@test.com',
+            'password' => 'password1234',
+        ];
+
+        $response = $this->postJson(route('user.login', $user));
+
+        $response->assertNotFound();
+
+        $response->assertJsonStructure([
+            'message', 
+            'data',
+        ]);
     }
 }

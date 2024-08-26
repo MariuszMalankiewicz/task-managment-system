@@ -1,6 +1,7 @@
 <?php
 
 namespace Tests\Unit\Controllers;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use Tests\TestCase;
 use App\Models\User;
@@ -8,14 +9,18 @@ use Illuminate\Support\Str;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\AuthenticationUserRegisterRequest;
+use App\Http\Requests\AuthenticationUserLoginRequest;
 use App\Http\Controllers\API\Authentication\AuthenticationUserController;
 
 class AuthenticationUserControllerTest extends TestCase
 {
+
+    use RefreshDatabase;
     protected $userServiceMock;
 
     protected $authenticationUserRegisterRequestMock;
-
+    
+    protected $authenticationUserLoginRequestMock;
     protected $controller;
 
     public function setUp(): void
@@ -25,6 +30,8 @@ class AuthenticationUserControllerTest extends TestCase
         $this->userServiceMock = Mockery::mock(UserService::class);
 
         $this->authenticationUserRegisterRequestMock = Mockery::mock(AuthenticationUserRegisterRequest::class);
+        
+        $this->authenticationUserLoginRequestMock = Mockery::mock(AuthenticationUserLoginRequest::class);
 
         $this->controller = new AuthenticationUserController($this->userServiceMock);
     }

@@ -10,5 +10,10 @@ class UserService
     public function createUser(array $data): User
     {
         return $this->userRepository->createUser($data);
+    } 
+
+    public function findUserFromEmail(string $email): User|null
+    {
+        return $this->userRepository->findUserFromEmail($email);
     }   
 }

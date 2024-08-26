@@ -2,25 +2,23 @@
 
 namespace Tests\Unit\Requests;
 use Tests\TestCase;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Requests\AuthenticationUserRegisterRequest;
+use App\Http\Requests\AuthenticationUserLoginRequest;
 
-class AuthenticationUserRegisterRequestTest extends TestCase
+class AuthenticationUserLoginRequestTest extends TestCase
 {
     protected $request;
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->request = new AuthenticationUserRegisterRequest();
+        $this->request = new AuthenticationUserLoginRequest();
     }
     public function test_request_has_expected_rules()
     {
         $this->assertEquals(
             [
-                'name' => 'required|min:4|max:255',
-                'email' => 'required|email|max:255|unique:users',
+                'email' => 'required|email|max:255',
                 'password' => 'required|min:8',
             ],
             $this->request->rules()
@@ -30,7 +28,6 @@ class AuthenticationUserRegisterRequestTest extends TestCase
     public function test_request_passes_validation()
     {
         $data = [
-            'name' => Str::random(4),
             'email' => fake()->unique()->safeEmail(),
             'password' => fake()->password(),
         ];
@@ -43,7 +40,6 @@ class AuthenticationUserRegisterRequestTest extends TestCase
     public function test_request_fails_validation()
     {
         $data = [
-            'name' => '',
             'email' => 'invalid-email',
             'password' => 'short',
         ];
@@ -53,8 +49,6 @@ class AuthenticationUserRegisterRequestTest extends TestCase
         $validator = Validator::make($data, $rules);
 
         $this->assertFalse($validator->passes());
-        
-        $this->assertArrayHasKey('name', $validator->errors()->toArray());
 
         $this->assertArrayHasKey('email', $validator->errors()->toArray());
 
