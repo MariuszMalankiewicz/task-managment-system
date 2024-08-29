@@ -27,11 +27,6 @@ class UserServiceTest extends TestCase
         $this->userService = new UserService($this->userRepository);
     }
 
-    public function test_instance_user_service()
-    {
-        $this->assertInstanceOf(User::class, $this->userService);
-    }
-
     public function test_create_user()
     {
         $data = [

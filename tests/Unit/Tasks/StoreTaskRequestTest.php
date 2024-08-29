@@ -6,7 +6,7 @@ use Tests\TestCase;
 use Illuminate\Validation\Rule;
 use App\Http\Requests\StoreTaskRequest;
 
-class TaskCreationValidationTest extends TestCase
+class StoreTaskRequestTest extends TestCase
 {
     protected $request;
     protected function setUp(): void

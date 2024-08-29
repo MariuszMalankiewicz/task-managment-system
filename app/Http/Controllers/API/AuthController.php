@@ -1,32 +1,32 @@
 <?php
 
-namespace App\Http\Controllers\API\Authentication;
+namespace App\Http\Controllers\API;
 
 use App\Models\User;
 use App\Services\UserService;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Hash;
-use Symfony\Component\HttpFoundation\Response;
-use App\Http\Requests\AuthenticationUserLoginRequest;
-use App\Http\Requests\AuthenticationUserRegisterRequest;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\LoginAuthRequest;
+use App\Http\Requests\RegisterAuthRequest;
+use Symfony\Component\HttpFoundation\Response;
 
-class AuthenticationUserController extends Controller
+class AuthController extends Controller
 {
     public function __construct(protected UserService $userService){}
-    public function register(AuthenticationUserRegisterRequest $authenticationUserRegisterRequest): JsonResponse
+    public function register(RegisterAuthRequest $registerAuthRequest): JsonResponse
     {
-        $validatedData = $authenticationUserRegisterRequest->validated();
+        $validatedData = $registerAuthRequest->validated();
 
         $user = $this->userService->createUser($validatedData);
 
         return response()->json(['message' => 'rejestracja udana', 'data' => $user], Response::HTTP_CREATED);
     }
 
-    public function login(AuthenticationUserLoginRequest $authenticationUserLoginRequest, User $user): JsonResponse
+    public function login(LoginAuthRequest $loginAuthRequest, User $user): JsonResponse
     {
-        $validatedData = $authenticationUserLoginRequest->validated();
+        $validatedData = $loginAuthRequest->validated();
 
         $validateDataEmail = $validatedData['email'];
 

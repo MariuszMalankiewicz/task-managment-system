@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Feature\Migrations;
+namespace Tests\Feature\API\Auth;
 
 use Tests\TestCase;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class UserTest extends TestCase
+class UserMigrationTest extends TestCase
 {
     use RefreshDatabase;
 
