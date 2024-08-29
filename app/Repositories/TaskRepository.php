@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Task;
 use App\Interfaces\TaskRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 
 class TaskRepository implements TaskRepositoryInterface
 {
@@ -19,5 +20,10 @@ class TaskRepository implements TaskRepositoryInterface
         $task->save();
 
         return $task;
+    }
+
+    public function getTasksFromUserId(int $id): Collection
+    {
+        return Task::where('user_id', $id)->get();
     }
 }

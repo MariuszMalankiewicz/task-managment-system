@@ -3,6 +3,7 @@
 namespace Tests\Unit\Tasks;
 
 use Tests\TestCase;
+use App\Models\Task;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
@@ -14,24 +15,11 @@ class TaskRepositoryTest extends TestCase
     use RefreshDatabase;
     protected $taskRepository;
 
-    protected $user;
-    
-    protected $task;
-
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->taskRepository = $this->app->make(TaskRepositoryInterface::class);
-
-        $this->user = Sanctum::actingAs(User::factory()->create(['id' => 1]));
-
-        $this->task = [
-            'title' => Str::random(10),
-            'description' => Str::random(50),
-            'status' => 'pending',
-            'user_id' => $this->user['id'],
-        ];
     }
 
     public function test_instance_task_repository()
@@ -41,14 +29,34 @@ class TaskRepositoryTest extends TestCase
 
     public function test_create_task()
     {
-        $response = $this->taskRepository->createTask($this->task);
+        $authUser = Sanctum::actingAs(User::factory()->create(['id' => 1]));
 
-        $this->assertEquals($this->task['title'], $response->title);
+        $task = [
+            'title' => Str::random(10),
+            'description' => Str::random(50),
+            'status' => 'pending',
+            'user_id' => $authUser['id'],
+        ];
 
-        $this->assertEquals($this->task['description'], $response->description);
+        $result = $this->taskRepository->createTask($task);
 
-        $this->assertEquals($this->task['status'], $response->status);
+        $this->assertEquals($task['title'], $result->title);
 
-        $this->assertEquals($this->task['user_id'], $response->user_id);
+        $this->assertEquals($task['description'], $result->description);
+
+        $this->assertEquals($task['status'], $result->status);
+
+        $this->assertEquals($task['user_id'], $result->user_id);
+    }
+
+    public function test_get_tasks_from_user_id()
+    {
+        $authUser = Sanctum::actingAs(User::factory()->create());
+
+        Task::factory()->create(['user_id' => $authUser['id']]);
+
+        $result = $this->taskRepository->getTasksFromUserId($authUser['id']);
+
+        $this->assertCount(1, $result);
     }
 }

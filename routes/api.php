@@ -11,3 +11,5 @@ Route::post('user/login', [AuthController::class, 'login'])->name('user.login');
 Route::post('user/logout', [AuthController::class, 'logout'])->name('user.logout')->middleware('auth:sanctum');
 
 Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store')->middleware('auth:sanctum');
+
+Route::get('tasks', [TaskController::class, 'index'])->name('tasks.index')->middleware('auth:sanctum');
