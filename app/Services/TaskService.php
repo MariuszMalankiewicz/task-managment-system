@@ -18,4 +18,18 @@ class TaskService
     {
         return $this->taskRepository->getTasksFromUserId($id);
     }
+
+    public function updateTask(int $id, array $data): Task|bool
+    {
+        $task = $this->taskRepository->find($id);
+
+        if(!$task)
+        {
+            return false;
+        }
+
+        $this->taskRepository->update($task, $data);
+
+        return $task;
+    }
 }

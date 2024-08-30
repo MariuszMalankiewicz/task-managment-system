@@ -60,4 +60,29 @@ class TaskServiceTest extends TestCase
 
         $this->assertCount(1, $result);
     }
+
+    public function test_update_task()
+    {
+        $authUser = Sanctum::actingAs(User::factory()->create());
+
+        $task = Task::factory()->make(['id' => 1,'user_id' => $authUser['id']]);
+
+        $data = [
+            'title' => 'update title',
+        ];
+
+        $this->taskRepository
+            ->shouldReceive('find')
+            ->with($task->id)
+            ->andReturn(new Task($task->toArray()));
+
+        $this->taskRepository
+            ->shouldReceive('update')
+            ->with(Mockery::type(Task::class), $data)
+            ->andReturn(true);
+
+        $result = $this->taskService->updateTask($task->id, $data);
+
+        $this->assertInstanceOf('\App\Models\Task', $result);
+    }
 }

@@ -10,4 +10,8 @@ interface TaskRepositoryInterface
     public function createTask(array $data): Task;
 
     public function getTasksFromUserId(int $id): Collection;
+
+    public function find(int $id): Task|null;
+
+    public function update(Task $task, array $data): bool;
 }

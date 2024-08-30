@@ -59,4 +59,39 @@ class TaskRepositoryTest extends TestCase
 
         $this->assertCount(1, $result);
     }
+
+    public function test_find_task()
+    {
+        $authUser = Sanctum::actingAs(User::factory()->create());
+
+        $task = Task::factory()->create(['user_id' => $authUser['id']]);
+
+        $result = $this->taskRepository->find($task->id);
+
+        $this->assertEquals($task->id, $result->id);
+
+        $this->assertEquals($task->title, $result->title);
+
+        $this->assertEquals($task->description, $result->description);
+
+        $this->assertEquals($task->status, $result->status);
+
+        $this->assertEquals($task->user_id, $result->user_id);
+    }
+
+    public function test_update_task()
+    {
+        $authUser = Sanctum::actingAs(User::factory()->create());
+
+        $task = Task::factory()->create(['user_id' => $authUser['id']]);
+
+        $data = [
+            'title' => 'update title',
+            'description' => 'update description',
+        ];
+
+        $result = $this->taskRepository->update($task, $data);
+
+        $this->assertTrue($result);
+    }
 }

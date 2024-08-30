@@ -26,4 +26,14 @@ class TaskRepository implements TaskRepositoryInterface
     {
         return Task::where('user_id', $id)->get();
     }
+
+    public function find(int $id): Task|null
+    {
+        return Task::find($id);
+    }
+
+    public function update(Task $task, array $data): bool
+    {
+        return $task->update($data);
+    }
 }
