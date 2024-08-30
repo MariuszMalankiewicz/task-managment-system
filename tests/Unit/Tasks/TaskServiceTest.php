@@ -9,6 +9,7 @@ use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 use App\Services\TaskService;
 use App\Repositories\TaskRepository;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TaskServiceTest extends TestCase
@@ -54,11 +55,20 @@ class TaskServiceTest extends TestCase
     {
         $authUser = Sanctum::actingAs(User::factory()->create());
 
-        Task::factory()->create(['user_id' => $authUser['id']]);
+        $task = Task::factory()->create(['user_id' => $authUser['id']]);
+
+        $this->taskRepository
+        ->shouldReceive('getTasksFromUserId')
+        ->with($authUser->id)
+        ->andReturn(new Collection($task));
 
         $result = $this->taskRepository->getTasksFromUserId($authUser['id']);
-
-        $this->assertCount(1, $result);
+        
+        $this->assertEquals($task->title, $result['title']);
+        $this->assertEquals($task->description, $result['description']);
+        $this->assertEquals($task->status, $result['status']);
+        $this->assertEquals($task->user_id, $result['user_id']);
+        $this->assertEquals($task->id, $result['id']);
     }
 
     public function test_update_task()
