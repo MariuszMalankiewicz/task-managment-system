@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\Task;
 use App\Services\TaskService;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
@@ -46,4 +47,15 @@ class TaskController extends Controller
         return response()->json(['message' => 'zadanie zaktualizowane', 'data' => $task], Response::HTTP_OK);
     }
     
+    public function destroy(int $id): JsonResponse
+    {
+        $taskDeleted = $this->taskService->deleteTask($id);
+
+        if(!$taskDeleted)
+        {
+            return response()->json(['message' => 'nie znaleziono zadania'], Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json([], Response::HTTP_NO_CONTENT);
+    }
 }

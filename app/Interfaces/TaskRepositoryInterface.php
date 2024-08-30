@@ -14,4 +14,6 @@ interface TaskRepositoryInterface
     public function find(int $id): Task|null;
 
     public function update(Task $task, array $data): bool;
+
+    public function delete(Task $task): bool;
 }

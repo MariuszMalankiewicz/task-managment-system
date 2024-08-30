@@ -95,4 +95,25 @@ class TaskServiceTest extends TestCase
 
         $this->assertInstanceOf('\App\Models\Task', $result);
     }
+
+    public function test_delete_task()
+    {
+        $authUser = Sanctum::actingAs(User::factory()->create());
+
+        $task = Task::factory()->make(['id' => 1,'user_id' => $authUser['id']]);
+
+        $this->taskRepository
+        ->shouldReceive('find')
+        ->with($task->id)
+        ->andReturn(new Task($task->toArray()));
+
+        $this->taskRepository
+        ->shouldReceive('delete')
+        ->with(Mockery::type(Task::class))
+        ->andReturn(true);
+
+        $result = $this->taskService->deleteTask($task->id);
+
+        $this->assertTrue($result);
+    }
 }

@@ -32,4 +32,16 @@ class TaskService
 
         return $task;
     }
+
+    public function deleteTask(int $id): bool
+    {
+        $task = $this->taskRepository->find($id);
+
+        if(!$task)
+        {
+            return false;
+        }
+
+        return $this->taskRepository->delete($task);
+    }
 }

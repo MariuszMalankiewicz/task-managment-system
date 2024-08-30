@@ -94,4 +94,15 @@ class TaskRepositoryTest extends TestCase
 
         $this->assertTrue($result);
     }
+
+    public function test_delete_task()
+    {
+        $authUser = Sanctum::actingAs(User::factory()->create());
+
+        $task = Task::factory()->create(['user_id' => $authUser['id']]);
+
+        $result = $this->taskRepository->delete($task);
+
+        $this->assertTrue($result);
+    }
 }
